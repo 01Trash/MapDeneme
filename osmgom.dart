@@ -23,8 +23,9 @@ class _MyAppState extends State<MyApp> {
 
   // function for getting the current location
   // but before that you need to add this permission!
-  void getCurrentLocation() async{
-    var position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  void getCurrentLocation() async {
+    var position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     var lat = position.latitude;
     var long = position.longitude;
 
@@ -37,28 +38,35 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-
   // function for opening it in google maps
   void googleMap() async {
-    String googleUrl = "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
+    String googleUrl =
+        "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude";
 
-    if (await canLaunch(googleUrl))
-    {
+    if (await canLaunch(googleUrl)) {
       await launch(googleUrl);
+    } else {
+      throw ("Google haritalar açılamadı");
     }
-    else {
-      throw("Google haritalar açılamadı");
+  }
+
+  // function for opening it in OSM maps
+  void osMap() async {
+    String osmUrl =
+        "https://www.openstreetmap.org/#map=15/$latitude/$longitude";
+
+    if (await canLaunch(osmUrl)) {
+      await launch(osmUrl);
+    } else {
+      throw ("OpenStreetMap haritalar açılamadı");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       title: 'Kullanıcı Konumu WGS84',
       theme: ThemeData(
-
-       
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Scaffold(
@@ -99,7 +107,7 @@ class _MyAppState extends State<MyApp> {
               // button for taking the location
               FlatButton(
                 color: Colors.white,
-                onPressed: (){
+                onPressed: () {
                   getCurrentLocation();
                 },
                 child: Text("Kullanıcı Konumunu Bul"),
@@ -109,10 +117,20 @@ class _MyAppState extends State<MyApp> {
               ),
               FlatButton(
                 color: Colors.white,
-                onPressed: (){
+                onPressed: () {
                   googleMap();
                 },
                 child: Text("GoogleMap Aç"),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              FlatButton(
+                color: Colors.white,
+                onPressed: () {
+                  osMap();
+                },
+                child: Text("OpenStreetMap Aç"),
               ),
             ],
           ),
